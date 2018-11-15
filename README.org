@@ -1,0 +1,34 @@
+* A C scheduler
+
+A simple scheduler implemented in C as a university homework for the OS class.
+The current plan is to develop an extension to the BFS shell and modify its
+purpose to be a functional shell + an *scheduler* and *fs* emulator (though
+the last bit is quite clunky and does not at all emulates an *fs*.
+
+* Roadmap
+
+[ ] Implement a process
+[ ] Implement a process table
+[ ] Implement strategy for the scheduler
+[ ] Implement an interface for viewing process that are executing
+[ ] Implement an interface to create and kill processes on the bfs_shell
+
+* The process
+
+The process can be viewed as an abstraction of a running program on top of the
+operating system (or it could be the operating system itself). Because of that
+there are some properties we wish to have. A process must have the following
+properties:
+
+- The PID of the process
+- The name of the process
+- The time needed to complete the process
+- The priority of the process (this should be implemented but not used on the scheduler yet)
+
+* The process table
+
+* The scheduler strategy
+
+* TODO The interface inside BFS
+
+* The process interface (creating and killing it)
