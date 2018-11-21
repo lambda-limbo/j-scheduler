@@ -1,11 +1,16 @@
 package org.scheduler;
 
 public class Process {
-    private int pid;
-    private String name;
-    private long runningTime;
-
-    private static PRIORITY priority = PRIORITY.LOW;
+    ///
+    public int pid;
+    ///
+    public String name;
+    ///
+    private long executionTime;
+    ///
+    private PRIORITY priority = PRIORITY.LOW;
+    ///
+    public Boolean finished = false;
     
     public enum PRIORITY {
         LOW,
@@ -13,17 +18,24 @@ public class Process {
         HIGH
     }
 
-    public Process(int pid, String name, long runningTime, PRIORITY priority) {
+    public Process(int pid, String name, long executionTime, PRIORITY priority) {
         this.pid = pid;
         this.name = name;
-        this.runningTime = runningTime;
+        this.executionTime = executionTime;
         this.priority = priority;
     }
 
-    public void listProperties() {
-        System.out.println("PID: " + this.pid + "\nName: " + name + "\nRunning time: " + this.runningTime + 
+    public void properties() {
+        System.out.println("PID: " + this.pid + "\nName: " + name + "\nRunning time: " + this.executionTime + 
             "\nPriority: " + this.priority.toString());
     }
 
-
+    public void processIt(long timeSlice) {
+        if (executionTime < 0 ) {
+            executionTime = 0;
+            finished = true;
+        } else {
+            executionTime -= timeSlice;
+        }
+    }
 }
