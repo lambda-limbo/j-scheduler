@@ -1,6 +1,5 @@
 package org.gui;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,9 +11,9 @@ public class Greetings implements ActionListener, Runnable {
     private JFrame frame;
     private JPanel panel;
 
-    private JLabel title = new JLabel("JScheduler");
-    private JLabel information = new JLabel("A Java Scheduler");
-    private JLabel copyleft = new JLabel("UTFPR");
+    private JLabel ltitle = new JLabel("JScheduler");
+    private JLabel linformation = new JLabel("A Java Scheduler");
+    private JLabel lcopyleft = new JLabel("UTFPR - SH");
 
     private JButton buttonInit = new JButton("Iniciar simulação");
     private JButton buttonExit = new JButton("Sair do programa");
@@ -31,14 +30,16 @@ public class Greetings implements ActionListener, Runnable {
     
         panel.setLayout(null);
 
-        title.setBounds(250, 50, 200, 30);
-        panel.add(title);
+        ltitle.setFont(Fonts.newBold(20));
+        ltitle.setBounds(240, 50, 200, 30);
+        panel.add(ltitle);
 
-        information.setBounds(250, 120, 200, 30);
-        panel.add(information);
+        linformation.setBounds(250, 80, 200, 30);
+        panel.add(linformation);
 
-        copyleft.setBounds(400, 380, 100, 10);
-        panel.add(copyleft);
+        lcopyleft.setFont(Fonts.newItalic(13));
+        lcopyleft.setBounds(520, 340, 100, 30);
+        panel.add(lcopyleft);
 
         buttonInit.setBounds(225, 190, 150, 30);
         panel.add(buttonInit);
