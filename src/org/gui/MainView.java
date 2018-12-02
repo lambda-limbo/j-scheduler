@@ -9,6 +9,7 @@ import org.scheduler.Scheduler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainView implements Runnable, ActionListener {
 
@@ -16,13 +17,15 @@ public class MainView implements Runnable, ActionListener {
     private JFrame frame;
     private JPanel panel;
 
-    // The table from which all process are seen
+    // The model table from which all process are seen
     private ProcessTable tpt = new ProcessTable();
+    // The model table from which all killed/finalized process are seem
+    private ProcessTable tpt2 = new ProcessTable();
 
     // Table for processes on ready/blocked processes
     private JTable ttable = new JTable(tpt);
     // Table for finalized process
-    private JTable ttable2 = new JTable(tpt);
+    private JTable ttable2 = new JTable(tpt2);
     private JScrollPane sptable = new JScrollPane(ttable);
     private JScrollPane sptable2 = new JScrollPane(ttable2);
 
@@ -96,6 +99,9 @@ public class MainView implements Runnable, ActionListener {
             p.properties();
 
             scheduler.add(p);
+
+            // What I'm about to do looks like poop but it will work
+            tpt.clear();
 
             for (Object[] o : scheduler.get()) {
                 tpt.push(o);

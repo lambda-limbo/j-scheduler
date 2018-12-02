@@ -30,6 +30,13 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
+     * @brief Clears the entire table
+     */
+    public void clear() {
+        this.data.clear();
+    }
+
+    /**
      * I feel that I need this function to update the table accordingly.
      */
     public void update() {
