@@ -8,6 +8,7 @@ public class ProcessTable extends AbstractTableModel {
     // Satisfying the linter 
     private static final long serialVersionUID = 1L;
 
+    // TER stands for tempo executável restante
     private final String columns[] = {"PID", "Nome", "TER", "Prioridade"};
     private Vector<Object[]> data = new Vector<>();
 
@@ -31,7 +32,7 @@ public class ProcessTable extends AbstractTableModel {
 
     public void remove(Object data[]) {
         this.data.remove(data);
-        fireTableRowsDeleted(this.data.size(), this.data.size());
+        fireTableRowsDeleted(0, this.data.size());
     }
 
     public void update() {

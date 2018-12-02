@@ -5,6 +5,8 @@ import java.util.*;
 import org.gui.MainView;
 import org.scheduler.Processor;
 
+import javax.swing.*;
+
 import static org.scheduler.Process.PRIORITY.*;
 
 public class Scheduler {
@@ -23,13 +25,17 @@ public class Scheduler {
 
     public void add(Process p) {
         processQueue.add(p);
+
+        queueIsEmpty = false;
     }
 
     public void remove(Process p) {
-        p.finished = true;
+        if (p != null ) {
+            p.finished = true;
 
-        deadProcessQueue.add(p);
-        processQueue.remove(p);
+            deadProcessQueue.add(p);
+            processQueue.remove(p);
+        }
     }
 
     public void remove(int pid) {
@@ -75,13 +81,13 @@ public class Scheduler {
     }
 
     public Process createProcess() {
-        String possibleProcesses[] = {"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
+        String[] possibleProcesses = new String[]{"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
                                       "firefox", "chrome", "leafpad", "intellij"};
 
         Random random = new Random();
 
-        int pid = this.pid;
-        this.pid++;
+        int pid = Scheduler.pid;
+        Scheduler.pid++;
 
         int index = random.nextInt(10);
 
@@ -101,25 +107,31 @@ public class Scheduler {
         return process;
     }
 
-    public void update(Processor processor) {
+    public synchronized void update(Processor processor) {
+        Process tbr = null;
+
         for (Process p : processQueue) {
             // if the process is already finished remove it from the process queue
             if (p.finished) {
-                processQueue.remove(p);
                 MainView.update(p);
+                tbr = p;
             }
+        }
+        // Removing the process and placing it on the deadProcessQueue
+        remove(tbr);
+        MainView.updateTable(MainView.tpt);
 
+        if (!processQueue.isEmpty()) {
             Process top = processQueue.peek();
 
-            try {
-                MainView.lexecdescription.setText(Integer.toString(top.pid) + " - " + top.name +
-                        " - Tempo restante: " + top.getExecutionTime() + "ms");
-            }
-            catch (NullPointerException ex) {
-                MainView.lexecdescription.setText("Finalizado");
-            }
+            remove(top.pid);
+            MainView.updateTable(MainView.tpt);
 
+            MainView.updateGUI(top);
             processor.feed(top);
+
+            add(top);
+            MainView.updateTable(MainView.tpt);
         }
         queueIsEmpty = processQueue.isEmpty();
     }

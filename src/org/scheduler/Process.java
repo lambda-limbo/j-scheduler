@@ -14,7 +14,7 @@ public class Process {
     /// The priority of execution of the process, it helps the scheduler as well
     private PRIORITY priority = PRIORITY.LOW;
     /// Does the process has finished its task?
-    public Boolean finished = false;
+    public Boolean finished;
 
     public enum PRIORITY {
         LOW,
@@ -27,6 +27,8 @@ public class Process {
         this.name = name;
         this.executionTime = executionTime;
         this.priority = priority;
+
+        finished = false;
     }
 
     public void properties() {
@@ -40,6 +42,7 @@ public class Process {
             finished = true;
         } else {
             executionTime -= timeSlice;
+            executed++;
         }
     }
 
@@ -53,5 +56,16 @@ public class Process {
 
     public int getExecuted() {
         return executed;
+    }
+
+    public Object[] toObject() {
+        Object[] properties = new Object[4];
+
+        properties[0] = pid;
+        properties[1] = name;
+        properties[2] = executionTime;
+        properties[3] = priority;
+
+        return properties;
     }
 }

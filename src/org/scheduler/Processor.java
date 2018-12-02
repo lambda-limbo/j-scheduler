@@ -10,6 +10,9 @@ public class Processor {
     }
 
     public void feed(Process p) {
+        // SOME WEIRD BUG IS TURNING ONE BOOLEAN VARIABLE TO TRUE (THE FINISHED VARIABLE)
+        // SO I'M EXPLICITLY ATTRIBUTING THIS VARIABLE TO FALSE.
+        p.finished = false;
         p.processIt(timeSlice);
         // This gives the behavior of processing a process
         try {

@@ -9,19 +9,17 @@ import org.scheduler.Scheduler;
 import org.scheduler.Processor;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
-public class MainView implements Runnable, ActionListener {
+public class MainView implements ActionListener {
 
     // Components of the UI
     private JFrame frame;
     private JPanel panel;
 
     // The model table from which all process are seen
-    private static ProcessTable tpt = new ProcessTable();
+    public static ProcessTable tpt = new ProcessTable();
     // The model table from which all killed/finalized process are seem
-    private static ProcessTable tpt2 = new ProcessTable();
+    public static ProcessTable tpt2 = new ProcessTable();
 
     // Table for processes on ready/blocked processes
     private JTable ttable = new JTable(tpt);
@@ -32,9 +30,9 @@ public class MainView implements Runnable, ActionListener {
 
     private JLabel ltable = new JLabel("Tabela de processos");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizados");
-    private JLabel lexecuting =  new JLabel("Executando o processo");
     public static JLabel lexecdescription =  new JLabel();
     private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
+    private JLabel lexecuting = new JLabel("Processo em execução");
 
     private JButton bnew = new JButton("Novo processo");
     private JButton bremove = new JButton("Matar processo");
@@ -43,8 +41,8 @@ public class MainView implements Runnable, ActionListener {
 
     // The scheduler used 
     static Scheduler scheduler = new Scheduler();
-
-    public void run() {}
+    // The processor used
+    Processor cpu = new Processor(100);
 
     public MainView() {
         frame = new JFrame();
@@ -57,12 +55,14 @@ public class MainView implements Runnable, ActionListener {
         // I will manueally set the position of UI elements as the window size is constant.
         panel.setLayout(null);
 
+        lprocessor.setFont(Fonts.bold);
         lprocessor.setBounds(10, 30, 250, 20);
         panel.add(lprocessor);
 
-        lexecuting.setBounds(10, 80, 250, 20);
+        lexecuting.setBounds(10, 115, 250, 20);
         panel.add(lexecuting);
 
+        lexecdescription.setFont(Fonts.newBoldItalic(12));
         lexecdescription.setBounds( 10, 130, 250, 20);
         panel.add(lexecdescription);
 
@@ -90,7 +90,7 @@ public class MainView implements Runnable, ActionListener {
         binit.setBounds(10, frame.getHeight()-70, 130, 30);
         panel.add(binit);
 
-        breset.setBounds(160, frame.getHeight()-70, 130, 30);
+        breset.setBounds(150, frame.getHeight()-70, 130, 30);
         panel.add(breset);
 
         bnew.addActionListener(this);
@@ -99,28 +99,16 @@ public class MainView implements Runnable, ActionListener {
         binit.addActionListener(this);
 
         frame.getContentPane().add(panel);
-        frame.setVisible(false);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-
     }
 
-    Processor pc = new Processor(100);
-
     public static void update(Process p) {
-        scheduler.remove(p);
+        tpt2.push(p.toObject());
 
-        Object[] data = new Object[4];
-
-        data[0] = p.pid;
-        data[1] = p.name;
-        data[2] = p.getExecutionTime();
-        data[3] = p.getPriority();
-
-        tpt.remove(data);
-        tpt2.push(data);
+        tpt.update();
+        tpt2.update();
     }
 
     @Override
@@ -130,14 +118,7 @@ public class MainView implements Runnable, ActionListener {
             p.properties();
 
             scheduler.add(p);
-
-            // What I'm about to do looks like poop but it will work
-            tpt.clear();
-
-            for (Object[] o : scheduler.get()) {
-                tpt.push(o);
-            }
-
+            updateTable(tpt);
         } else if (e.getSource() == bremove) {
             int row = ttable.getSelectedRow();
 
@@ -157,10 +138,32 @@ public class MainView implements Runnable, ActionListener {
             tpt.clear();
             tpt2.clear();
         } else if(e.getSource() == binit) {
-            while(!scheduler.queueIsEmpty) {
-                scheduler.update(pc);
-            }
+            Runnable r = () -> {
+                while(!scheduler.queueIsEmpty) {
+                    scheduler.update(cpu);
+                }
+            };
+
+            Thread t = new Thread(r);
+            t.start();
         }
 
+    }
+
+    public static void updateTable(ProcessTable pt) {
+        // What I'm about to do looks like MacGyverism but it will work
+        pt.clear();
+
+        for (Object[] o : scheduler.get()) {
+            pt.push(o);
+        }
+    }
+
+    public static void updateGUI(Process p) {
+        try {
+            MainView.lexecdescription.setText(p.pid + " - " + p.name + " - " + p.getExecutionTime() + "ms");
+        } catch (NullPointerException ex) {
+            MainView.lexecdescription.setText("Finalizado");
+        }
     }
 }
