@@ -13,8 +13,10 @@ public class Scheduler {
     private Queue<Process> processQueue = new PriorityQueue<>(processComparator);
     private Queue<Process> deadProcessQueue = new PriorityQueue<>(processComparator);
 
+    private static int pid;
+
     public Scheduler() {
-        
+        pid = 0;
     }
 
     public void add(Process p) {
@@ -76,7 +78,9 @@ public class Scheduler {
 
         Random random = new Random();
 
-        int pid = Math.abs((random.nextInt() * 100) >> random.nextInt());
+        int pid = this.pid;
+        this.pid++;
+
         int index = random.nextInt(10);
 
         long exec = (long) random.nextInt(100)*100/(random.nextInt(4)+1);
