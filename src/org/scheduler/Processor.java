@@ -1,7 +1,5 @@
 package org.scheduler;
 
-import org.scheduler.Process;
-
 public class Processor {
 
     // The execution limit that a processor can give to a process in milliseconds
