@@ -1,3 +1,5 @@
+# BEWARE, THE CODE IS HORRIBLE, NOW PROCEED.
+
 # A Java scheduler
 
 A simple scheduler implemented in Java as a university homework for the OS class.
