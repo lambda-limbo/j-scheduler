@@ -130,14 +130,13 @@ public class Scheduler {
             int te2 = p2.getExecuted();
 
             if (pp1 == pp2) {
-                // if they have the same priority the amount of times executed the process will decide
-                if (te1 > te2) {
+                // if they have the same priority, the amount of times executed will decide who goes first
+                if (te1 >= te2) {
                     r = 1;
                 } else {
                     r = -1;
                 }
-            } else if (pp1 == Process.PRIORITY.HIGH && pp2 == Process.PRIORITY.LOW ||
-                        pp1 == Process.PRIORITY.HIGH && pp2 == Process.PRIORITY.MEDIUM) {
+            } else if (pp1 == HIGH && pp2 == LOW || pp1 == HIGH && pp2 == MEDIUM) {
                 // If a process has a high priority but it has been executed at least 2 times more the amount of time
                 // the other process has used the processor, the latter will take the lead on the queue.
                 if (te1 > 2*te2) {
@@ -145,10 +144,8 @@ public class Scheduler {
                 } else {
                     r = -1;
                 }
-            } else if (pp2 == Process.PRIORITY.HIGH && pp1 == Process.PRIORITY.LOW ||
-                    pp2 == Process.PRIORITY.HIGH && pp1 == Process.PRIORITY.MEDIUM) {
-                // If a process has a high priority but it has been executed at least 2 times more the amount of time
-                // the other process has used the processor, the latter will take the lead on the queue.
+            } else if (pp2 == HIGH && pp1 == LOW || pp2 == HIGH && pp1 == MEDIUM) {
+                // analogously to the previous comment
                 if (te1 > 2*te2) {
                     r = -1;
                 } else {
