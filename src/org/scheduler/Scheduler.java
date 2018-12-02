@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.scheduler.Processor;
 
-import static org.scheduler.Process.PRIORITY.LOW;
+import static org.scheduler.Process.PRIORITY.*;
 
 public class Scheduler {
 
@@ -19,6 +19,16 @@ public class Scheduler {
 
     public void add(Process p) {
         processQueue.add(p);
+    }
+
+    public void remove(Process p) {
+        deadProcessQueue.add(p);
+        processQueue.remove(p);
+    }
+
+    public void clear() {
+        processQueue.clear();
+        deadProcessQueue.clear();
     }
 
     public List<Object[]> get() {
@@ -42,20 +52,28 @@ public class Scheduler {
     }
 
     public static Process createProcess() {
-        String possibleProcesses[] = {"gnutella", "kern", "emacs", "vim", "acpid", "alsa"};
+        String possibleProcesses[] = {"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
+                                      "firefox", "chrome", "leafpad", "intellij"};
 
         Random random = new Random();
 
         int pid = Math.abs(random.nextInt() * 100 >> random.nextInt());
         int index = random.nextInt(6);
 
-        long divisor = 100000000000L;
-        long exec = 2500; // 2500ms
+        long exec = (long) random.nextInt(100)*100/(random.nextInt(4)+1);
 
+        int priority = random.nextInt(19)+1;
+        Process.PRIORITY p = LOW;
 
-        Process p = new Process(pid, possibleProcesses[index], exec, LOW);
+        if (priority >= 8 && priority < 15) {
+            p = MEDIUM;
+        } else if (priority > 15) {
+            p = HIGH;
+        }
 
-        return p;
+        Process process = new Process(pid, possibleProcesses[index], exec, p);
+
+        return process;
     }
 
     public void update(Processor processor) {
