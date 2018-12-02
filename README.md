@@ -4,11 +4,11 @@ A simple scheduler implemented in Java as a university homework for the OS class
 
 # Roadmap
 
-- [ ] Implement a process
-- [ ] Implement a process table
-- [ ] Implement strategy for the scheduler
-- [ ] Implement an interface to create and kill processes
-- [ ] Implement an interface for viewing process that are executing
+- [x] Implement a process
+- [x] Implement a process table
+- [x] Implement strategy for the scheduler
+- [x] Implement an interface to create and kill processes
+- [x] Implement an interface for viewing process that are executing
 
 
 # The process
