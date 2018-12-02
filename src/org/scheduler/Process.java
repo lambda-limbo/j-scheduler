@@ -31,11 +31,11 @@ public class Process {
 
     public void properties() {
         System.out.println("PID: " + this.pid + "\nName: " + name + "\nRunning time: " + this.executionTime + 
-            "\nPriority: " + this.priority.toString());
+            "\nPriority: " + this.priority.toString() + "\n");
     }
 
     public void processIt(long timeSlice) {
-        if (executionTime < 0 ) {
+        if (executionTime <= 0 ) {
             executionTime = 0;
             finished = true;
         } else {
