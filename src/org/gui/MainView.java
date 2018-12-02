@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import org.scheduler.Process;
 import org.scheduler.Scheduler;
+import org.scheduler.Processor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,9 +19,9 @@ public class MainView implements Runnable, ActionListener {
     private JPanel panel;
 
     // The model table from which all process are seen
-    private ProcessTable tpt = new ProcessTable();
+    private static ProcessTable tpt = new ProcessTable();
     // The model table from which all killed/finalized process are seem
-    private ProcessTable tpt2 = new ProcessTable();
+    private static ProcessTable tpt2 = new ProcessTable();
 
     // Table for processes on ready/blocked processes
     private JTable ttable = new JTable(tpt);
@@ -32,14 +33,16 @@ public class MainView implements Runnable, ActionListener {
     private JLabel ltable = new JLabel("Tabela de processos");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizados");
     private JLabel lexecuting =  new JLabel("Executando o processo");
+    public static JLabel lexecdescription =  new JLabel();
     private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
 
     private JButton bnew = new JButton("Novo processo");
     private JButton bremove = new JButton("Matar processo");
     private JButton breset = new JButton("Resetar simulação");
+    private JButton binit = new JButton("Iniciar simulação");
 
     // The scheduler used 
-    Scheduler scheduler = new Scheduler();
+    static Scheduler scheduler = new Scheduler();
 
     public void run() {}
 
@@ -59,6 +62,9 @@ public class MainView implements Runnable, ActionListener {
 
         lexecuting.setBounds(10, 80, 250, 20);
         panel.add(lexecuting);
+
+        lexecdescription.setBounds( 10, 130, 250, 20);
+        panel.add(lexecdescription);
 
         ltable.setBounds(10, 180, 150, 20);
         panel.add(ltable);
@@ -81,18 +87,40 @@ public class MainView implements Runnable, ActionListener {
         bremove.setBounds(frame.getWidth()-110, frame.getHeight()-70, 100, 30);
         panel.add(bremove);
 
-        breset.setBounds(10, frame.getHeight()-70, 130, 30);
+        binit.setBounds(10, frame.getHeight()-70, 130, 30);
+        panel.add(binit);
+
+        breset.setBounds(160, frame.getHeight()-70, 130, 30);
         panel.add(breset);
 
         bnew.addActionListener(this);
         bremove.addActionListener(this);
         breset.addActionListener(this);
+        binit.addActionListener(this);
 
         frame.getContentPane().add(panel);
         frame.setVisible(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+
+    }
+
+    Processor pc = new Processor(100);
+
+    public static void update(Process p) {
+        scheduler.remove(p);
+
+        Object[] data = new Object[4];
+
+        data[0] = p.pid;
+        data[1] = p.name;
+        data[2] = p.getExecutionTime();
+        data[3] = p.getPriority();
+
+        tpt.remove(data);
+        tpt2.push(data);
     }
 
     @Override
@@ -109,6 +137,7 @@ public class MainView implements Runnable, ActionListener {
             for (Object[] o : scheduler.get()) {
                 tpt.push(o);
             }
+
         } else if (e.getSource() == bremove) {
             int row = ttable.getSelectedRow();
 
@@ -127,6 +156,11 @@ public class MainView implements Runnable, ActionListener {
             scheduler.clear();
             tpt.clear();
             tpt2.clear();
+        } else if(e.getSource() == binit) {
+            while(!scheduler.queueIsEmpty) {
+                scheduler.update(pc);
+            }
         }
+
     }
 }

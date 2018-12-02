@@ -2,6 +2,7 @@ package org.scheduler;
 
 import java.util.*;
 
+import org.gui.MainView;
 import org.scheduler.Processor;
 
 import static org.scheduler.Process.PRIORITY.*;
@@ -10,6 +11,7 @@ public class Scheduler {
 
     private Comparator<Process> processComparator = new ProcessComparator();
 
+    public boolean queueIsEmpty = false;
     private Queue<Process> processQueue = new PriorityQueue<>(processComparator);
     private Queue<Process> deadProcessQueue = new PriorityQueue<>(processComparator);
 
@@ -100,12 +102,22 @@ public class Scheduler {
             // if the process is already finished remove it from the process queue
             if (p.finished) {
                 processQueue.remove(p);
+                MainView.update(p);
             }
 
             Process top = processQueue.peek();
 
+            try {
+                MainView.lexecdescription.setText(Integer.toString(top.pid) + " - " + top.name +
+                        " - Tempo restante: " + top.getExecutionTime() + "ms");
+            }
+            catch (NullPointerException ex) {
+                MainView.lexecdescription.setText("Finalizado");
+            }
+
             processor.feed(top);
         }
+        queueIsEmpty = processQueue.isEmpty();
     }
 
 
