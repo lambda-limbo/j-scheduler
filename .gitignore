@@ -1,6 +1,9 @@
 # VSCode related files
 .vscode/*
 
+# IntelliJ-IDEA files
+.idea/*
+
 # Java related files
 *.class
 
