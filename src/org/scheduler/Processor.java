@@ -14,6 +14,10 @@ public class Processor {
     public void feed(Process p) {
         p.processIt(timeSlice);
         // This gives the behavior of processing a process
-        Thread.sleep(timeSlice);
+        try {
+            Thread.sleep(timeSlice);
+        } catch(InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 }

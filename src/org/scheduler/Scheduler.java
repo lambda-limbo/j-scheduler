@@ -1,13 +1,17 @@
 package org.scheduler;
 
-import java.util.Queue;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import org.scheduler.Processor;
 
+import static org.scheduler.Process.PRIORITY.LOW;
+
 public class Scheduler {
 
-    private Queue<Process> processQueue = new PriorityQueue<>();
+    private Comparator<Process> processComparator = new ProcessComparator();
+
+    private Queue<Process> processQueue = new PriorityQueue<>(processComparator);
+    private Queue<Process> deadProcessQueue = new PriorityQueue<>(processComparator);
 
     public Scheduler() {
         
@@ -15,7 +19,44 @@ public class Scheduler {
 
     public void add(Process p) {
         processQueue.add(p);
-    } 
+    }
+
+    public List<Object[]> get() {
+        List<Object[]> processes = new ArrayList<>();
+
+        // copy of the original processQueue
+        Queue<Process> copy = processQueue;
+
+        for (Process p : copy) {
+            Object[] o = new Object[4];
+
+            o[0] = p.pid;
+            o[1] = p.name;
+            o[2] = p.getExecutionTime();
+            o[3] = p.getPriority();
+
+            processes.add(o);
+        }
+
+        return processes;
+    }
+
+    public static Process createProcess() {
+        String possibleProcesses[] = {"gnutella", "kern", "emacs", "vim", "acpid", "alsa"};
+
+        Random random = new Random();
+
+        int pid = Math.abs(random.nextInt() * 100 >> random.nextInt());
+        int index = random.nextInt(6);
+
+        long divisor = 100000000000L;
+        long exec = 2500; // 2500ms
+
+
+        Process p = new Process(pid, possibleProcesses[index], exec, LOW);
+
+        return p;
+    }
 
     public void update(Processor processor) {
         for (Process p : processQueue) {
@@ -31,4 +72,50 @@ public class Scheduler {
     }
 
 
+    /**
+     * @brief This is the sorter function, it orders elements accordingly with our scheduler algorithm.
+     */
+    private class ProcessComparator implements Comparator<Process> {
+
+        @Override
+        public int compare(Process p1, Process p2) {
+
+            int r = 0;
+
+            Process.PRIORITY pp1 =  p1.getPriority();
+            Process.PRIORITY pp2 =  p2.getPriority();
+
+            int te1 = p1.getExecuted();
+            int te2 = p2.getExecuted();
+
+            if (pp1 == pp2) {
+                // if they have the same priority the amount of times executed the process will decide
+                if (te1 > te2) {
+                    r = 1;
+                } else {
+                    r = -1;
+                }
+            } else if (pp1 == Process.PRIORITY.HIGH && pp2 == Process.PRIORITY.LOW ||
+                        pp1 == Process.PRIORITY.HIGH && pp2 == Process.PRIORITY.MEDIUM) {
+                // If a process has a high priority but it has been executed at least 2 times more the amount of time
+                // the other process has used the processor, the latter will take the lead on the queue.
+                if (te1 > 2*te2) {
+                    r = 1;
+                } else {
+                    r = -1;
+                }
+            } else if (pp2 == Process.PRIORITY.HIGH && pp1 == Process.PRIORITY.LOW ||
+                    pp2 == Process.PRIORITY.HIGH && pp1 == Process.PRIORITY.MEDIUM) {
+                // If a process has a high priority but it has been executed at least 2 times more the amount of time
+                // the other process has used the processor, the latter will take the lead on the queue.
+                if (te1 > 2*te2) {
+                    r = -1;
+                } else {
+                    r = 1;
+                }
+            }
+
+            return r;
+        }
+    }
 }
