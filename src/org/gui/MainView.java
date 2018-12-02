@@ -31,11 +31,12 @@ public class MainView implements Runnable, ActionListener {
 
     private JLabel ltable = new JLabel("Tabela de processos");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizados");
-    private JLabel lexecuting =  new JLabel("Executando de número PID: ");
+    private JLabel lexecuting =  new JLabel("Executando o processo");
     private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
 
     private JButton bnew = new JButton("Novo processo");
     private JButton bremove = new JButton("Matar processo");
+    private JButton breset = new JButton("Resetar simulação");
 
     // The scheduler used 
     Scheduler scheduler = new Scheduler();
@@ -56,7 +57,7 @@ public class MainView implements Runnable, ActionListener {
         lprocessor.setBounds(10, 30, 250, 20);
         panel.add(lprocessor);
 
-        lexecuting.setBounds(10, 50, 250, 20);
+        lexecuting.setBounds(10, 80, 250, 20);
         panel.add(lexecuting);
 
         ltable.setBounds(10, 180, 150, 20);
@@ -69,6 +70,7 @@ public class MainView implements Runnable, ActionListener {
         sptable.setBounds(10, 200, 380, 320);
         panel.add(sptable);
 
+        ttable2.setEnabled(false);
         sptable2.getViewport().add(ttable2);
         sptable2.setBounds(400, 200, 390, 320);
         panel.add(sptable2);
@@ -77,11 +79,14 @@ public class MainView implements Runnable, ActionListener {
         panel.add(bnew);
 
         bremove.setBounds(frame.getWidth()-110, frame.getHeight()-70, 100, 30);
-        bremove.setEnabled(false);
         panel.add(bremove);
+
+        breset.setBounds(10, frame.getHeight()-70, 130, 30);
+        panel.add(breset);
 
         bnew.addActionListener(this);
         bremove.addActionListener(this);
+        breset.addActionListener(this);
 
         frame.getContentPane().add(panel);
         frame.setVisible(false);
@@ -93,8 +98,7 @@ public class MainView implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bnew) {
-            // TODO: Create a process and add it to the Scheduler
-            Process p = Scheduler.createProcess();
+            Process p = scheduler.createProcess();
             p.properties();
 
             scheduler.add(p);
@@ -106,8 +110,23 @@ public class MainView implements Runnable, ActionListener {
                 tpt.push(o);
             }
         } else if (e.getSource() == bremove) {
-            // TODO: Open the window to prompt for a process
-            new KillProcess();
+            int row = ttable.getSelectedRow();
+
+            if (row == -1) {
+                JOptionPane.showMessageDialog(null, "Selecione um processo",
+                        "Erro de seleção", JOptionPane.WARNING_MESSAGE);
+            } else {
+                Object[] process = tpt.getValue(row);
+                int pid = (int) process[0];
+                scheduler.remove(pid);
+
+                tpt.remove(row);
+                tpt2.push(process);
+            }
+        } else if (e.getSource() == breset) {
+            scheduler.clear();
+            tpt.clear();
+            tpt2.clear();
         }
     }
 }

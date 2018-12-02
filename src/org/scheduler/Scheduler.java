@@ -22,8 +22,27 @@ public class Scheduler {
     }
 
     public void remove(Process p) {
+        p.finished = true;
+
         deadProcessQueue.add(p);
         processQueue.remove(p);
+    }
+
+    public void remove(int pid) {
+        Process toBeRemoved = null;
+
+        for (Process p : processQueue) {
+            if (p.pid == pid) {
+                toBeRemoved = p;
+            }
+        }
+
+        if (toBeRemoved != null) {
+            toBeRemoved.finished = true;
+
+            deadProcessQueue.add(toBeRemoved);
+            processQueue.remove(toBeRemoved);
+        }
     }
 
     public void clear() {
@@ -51,14 +70,14 @@ public class Scheduler {
         return processes;
     }
 
-    public static Process createProcess() {
+    public Process createProcess() {
         String possibleProcesses[] = {"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
                                       "firefox", "chrome", "leafpad", "intellij"};
 
         Random random = new Random();
 
-        int pid = Math.abs(random.nextInt() * 100 >> random.nextInt());
-        int index = random.nextInt(6);
+        int pid = Math.abs((random.nextInt() * 100) >> random.nextInt());
+        int index = random.nextInt(10);
 
         long exec = (long) random.nextInt(100)*100/(random.nextInt(4)+1);
 
