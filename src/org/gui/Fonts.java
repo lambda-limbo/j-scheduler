@@ -19,4 +19,8 @@ public class Fonts {
     public static Font newItalic(int size) {
         return new Font(null, Font.ITALIC, size);
     }
+
+    public static Font newBoldItalic(int size) {
+        return new Font(null, Font.ITALIC + Font.BOLD, size);
+    }
 }
