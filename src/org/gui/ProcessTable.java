@@ -37,13 +37,6 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * I feel that I need this function to update the table accordingly.
-     */
-    public void update() {
-        fireTableRowsUpdated(0, data.size());
-    }
-
-    /**
      * 
      * @return
      */

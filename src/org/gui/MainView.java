@@ -80,7 +80,6 @@ public class MainView implements Runnable, ActionListener {
         bremove.setEnabled(false);
         panel.add(bremove);
 
-
         bnew.addActionListener(this);
         bremove.addActionListener(this);
 
@@ -106,8 +105,6 @@ public class MainView implements Runnable, ActionListener {
             for (Object[] o : scheduler.get()) {
                 tpt.push(o);
             }
-
-            tpt.update();
         } else if (e.getSource() == bremove) {
             // TODO: Open the window to prompt for a process
             new KillProcess();
