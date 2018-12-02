@@ -29,11 +29,16 @@ public class ProcessTable extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
     }
 
+    public void update() {
+        fireTableRowsUpdated(0, data.size());
+    }
+
     /**
      * @brief Clears the entire table
      */
     public void clear() {
         this.data.clear();
+        fireTableRowsDeleted(0, data.size());
     }
 
     /**
