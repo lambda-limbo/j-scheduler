@@ -2,8 +2,12 @@
 .vscode/*
 
 # IntelliJ-IDEA files
+*.iml
 .idea/*
+out/
 
 # Java related files
 *.class
 
+# Non project related files
+*.zip
