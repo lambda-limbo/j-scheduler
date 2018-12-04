@@ -48,7 +48,9 @@ public class Scheduler {
         }
 
         if (toBeRemoved != null) {
-            toBeRemoved.finished = true;
+            if (toBeRemoved.getExecutionTime() <= 0) {
+                toBeRemoved.finished = true;
+            }
 
             deadProcessQueue.add(toBeRemoved);
             processQueue.remove(toBeRemoved);
@@ -82,14 +84,15 @@ public class Scheduler {
 
     public Process createProcess() {
         String[] possibleProcesses = new String[]{"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
-                                      "firefox", "chrome", "leafpad", "intellij"};
+                                      "firefox", "chrome", "leafpad", "intellij", "0ad", "word", "WoW",
+                                      "calendar", "music", "steam", "origin"};
 
         Random random = new Random();
 
         int pid = Scheduler.pid;
         Scheduler.pid++;
 
-        int index = random.nextInt(10);
+        int index = random.nextInt(possibleProcesses.length);
 
         long exec = (long) random.nextInt(100)*100/(random.nextInt(4)+1);
 
@@ -108,6 +111,7 @@ public class Scheduler {
     }
 
     public synchronized void update(Processor processor) {
+        // Process to be removed
         Process tbr = null;
 
         for (Process p : processQueue) {
@@ -133,6 +137,7 @@ public class Scheduler {
             add(top);
             MainView.updateTable(MainView.tpt);
         }
+
         queueIsEmpty = processQueue.isEmpty();
     }
 
