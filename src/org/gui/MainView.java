@@ -30,19 +30,21 @@ public class MainView implements ActionListener {
 
     private JLabel ltable = new JLabel("Tabela de processos");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizados");
-    public static JLabel lexecdescription =  new JLabel();
     private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
-    private JLabel lexecuting = new JLabel("Processo em execução");
+    private static JLabel lexecuting = new JLabel("Processo em execução");
+    private static JLabel lexecdescription =  new JLabel();
 
     private JButton bnew = new JButton("Novo processo");
     private JButton bremove = new JButton("Matar processo");
     private JButton breset = new JButton("Resetar simulação");
-    private JButton binit = new JButton("Iniciar simulação");
+    private static JButton binit = new JButton("Iniciar simulação");
 
     // The scheduler used 
     static Scheduler scheduler = new Scheduler();
     // The processor used
     Processor cpu = new Processor(100);
+
+    static boolean executionFinished;
 
     public MainView() {
         frame = new JFrame();
@@ -59,9 +61,11 @@ public class MainView implements ActionListener {
         lprocessor.setBounds(10, 30, 250, 20);
         panel.add(lprocessor);
 
+        lexecuting.setVisible(false);
         lexecuting.setBounds(10, 115, 250, 20);
         panel.add(lexecuting);
 
+        lexecdescription.setVisible(false);
         lexecdescription.setFont(Fonts.newBoldItalic(12));
         lexecdescription.setBounds( 10, 130, 250, 20);
         panel.add(lexecdescription);
@@ -137,7 +141,17 @@ public class MainView implements ActionListener {
             scheduler.clear();
             tpt.clear();
             tpt2.clear();
+
+            lexecdescription.setVisible(false);
+            lexecuting.setVisible(false);
+            binit.setEnabled(true);
         } else if(e.getSource() == binit) {
+            executionFinished = false;
+
+            lexecdescription.setVisible(true);
+            lexecuting.setVisible(true);
+            binit.setEnabled(false);
+
             Runnable r = () -> {
                 while(!scheduler.queueIsEmpty) {
                     scheduler.update(cpu);
