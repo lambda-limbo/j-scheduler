@@ -15,8 +15,9 @@ public class Greetings implements ActionListener, Runnable {
     private JLabel linformation = new JLabel("A Java Scheduler");
     private JLabel lcopyleft = new JLabel("UTFPR - SH");
 
-    private JButton buttonInit = new JButton("Iniciar simulação");
-    private JButton buttonExit = new JButton("Sair do programa");
+    private JButton binit = new JButton("Iniciar simulação");
+    private JButton binformation = new JButton("Informações");
+    private JButton bexit = new JButton("Sair do programa");
 
     public void run() {}
 
@@ -41,14 +42,18 @@ public class Greetings implements ActionListener, Runnable {
         lcopyleft.setBounds(520, 340, 100, 30);
         panel.add(lcopyleft);
 
-        buttonInit.setBounds(225, 190, 150, 30);
-        panel.add(buttonInit);
+        binit.setBounds(225, 190, 150, 30);
+        panel.add(binit);
 
-        buttonExit.setBounds(225, 235, 150, 30);
-        panel.add(buttonExit);
+        binformation.setBounds(225, 235, 150, 30);
+        panel.add(binformation);
 
-        buttonInit.addActionListener(this);
-        buttonExit.addActionListener(this);
+        bexit.setBounds(225, 275, 150, 30);
+        panel.add(bexit);
+
+        binit.addActionListener(this);
+        binformation.addActionListener(this);
+        bexit.addActionListener(this);
 
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -59,11 +64,15 @@ public class Greetings implements ActionListener, Runnable {
     @Override
     public void actionPerformed(ActionEvent  e) {
 
-        if (e.getSource().equals(buttonInit)) {
+        if (e.getSource().equals(binit)) {
             frame.dispose();
             new MainView();
-        } else if (e.getSource().equals(buttonExit)) {
+        } else if (e.getSource().equals(bexit)) {
             System.exit(0);
+        } else if (e.getSource().equals(binformation)) {
+            JOptionPane.showMessageDialog(frame, "<html>Autores do programa: <b>Rafael Campos Nunes</b> e <b>Mikael Pereira Messias</b>.<br>" +
+                            "Disponível em <a href=''>https://github.com/rafaelcn/jscheduler</a>.</html>",
+                    "Informações do programa", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
