@@ -85,7 +85,9 @@ public class Scheduler {
     public Process createProcess() {
         String[] possibleProcesses = new String[]{"gnutella", "kern", "emacs", "vim", "acpid", "alsa",
                                       "firefox", "chrome", "leafpad", "intellij", "0ad", "word", "WoW",
-                                      "calendar", "music", "steam", "origin"};
+                                      "calendar", "music", "steam", "origin", "git", "code", "xorg", "wayland",
+                                      "gcc", "go"};
+
 
         Random random = new Random();
 
@@ -146,10 +148,8 @@ public class Scheduler {
      * @brief This is the sorter function, it orders elements accordingly with our scheduler algorithm.
      */
     private class ProcessComparator implements Comparator<Process> {
-
         @Override
         public int compare(Process p1, Process p2) {
-
             int r = 0;
 
             Process.PRIORITY pp1 =  p1.getPriority();

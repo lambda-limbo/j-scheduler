@@ -28,8 +28,8 @@ public class MainView implements ActionListener {
     private JScrollPane sptable = new JScrollPane(ttable);
     private JScrollPane sptable2 = new JScrollPane(ttable2);
 
-    private JLabel ltable = new JLabel("Tabela de processos");
-    private JLabel ltable2 = new JLabel("Tabela de processos finalizados");
+    private JLabel ltable = new JLabel("Tabela de processos pronto(s)");
+    private JLabel ltable2 = new JLabel("Tabela de processos finalizado(s)");
     private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
     private static JLabel lexecuting = new JLabel("Processo em execução");
     private static JLabel lexecdescription =  new JLabel();
