@@ -5,6 +5,10 @@ public class Processor {
     // The execution limit that a processor can give to a process in milliseconds
     private long timeSlice;
 
+    public long getTimeSlice() {
+        return timeSlice;
+    }
+
     public Processor(long timeSlice) {
         this.timeSlice = timeSlice;
     }

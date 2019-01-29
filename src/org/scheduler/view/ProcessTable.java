@@ -5,7 +5,7 @@ import java.util.Vector;
 
 public class ProcessTable extends AbstractTableModel {
 
-    // Satisfying the linter 
+    // Satisfying the linter
     private static final long serialVersionUID = 1L;
 
     // TER stands for tempo executável restante
@@ -13,7 +13,7 @@ public class ProcessTable extends AbstractTableModel {
     private Vector<Object[]> data = new Vector<>();
 
     /**
-     * 
+     *
      * @param data
      */
     public void push(Object data[]) {
@@ -22,7 +22,7 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * 
+     *
      * @param row
      */
     public void remove(int row) {
@@ -48,7 +48,7 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getRowCount() {
@@ -56,7 +56,7 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getColumnCount() {
@@ -64,7 +64,7 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * 
+     *
      */
     @Override
     public String getColumnName(int i) {
@@ -72,14 +72,23 @@ public class ProcessTable extends AbstractTableModel {
     }
 
     /**
-     * 
+     * @brief Returns the data at row and column indicated on the arguments,
+     * it might return null and the caller should treat that behavior.
      */
     public Object getValueAt(int row, int column) {
-        return data.get(row)[column];
+        Object r = null;
+
+        try {
+            r = data.get(row)[column];
+        } catch(ArrayIndexOutOfBoundsException ex) {
+            System.out.println("Error trying to retrieve an element from the table.");
+        }
+
+        return r;
     }
 
     /**
-     * 
+     *
      * @param row
      * @return
      */

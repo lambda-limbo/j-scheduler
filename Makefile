@@ -5,9 +5,13 @@ JAR = jar
 FLAGS =
 
 SRC = org/Main.java org/scheduler/view/Greetings.java \
-	  org/scheduler/view/MainView.java \
-      org/scheduler/model/Processor.java org/scheduler/model/Process.java  \
-      org/scheduler/model/Scheduler.java
+	  org/scheduler/view/MainView.java                \
+      org/scheduler/model/Processor.java              \
+	  org/scheduler/model/Process.java                \
+      org/scheduler/model/Scheduler.java              \
+	  org/scheduler/model/ProcessComparator.java      \
+	  org/scheduler/controller/ProcessController.java \
+	  org/scheduler/controller/TableController.java
 
 OBJ = `find .. -name "*.class" | xargs echo`
 

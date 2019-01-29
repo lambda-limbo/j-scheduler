@@ -8,6 +8,10 @@ import org.scheduler.model.Process;
 import org.scheduler.model.Scheduler;
 import org.scheduler.model.Processor;
 
+import org.scheduler.controller.TableController;
+import org.scheduler.controller.TableController.QueueType;
+import org.scheduler.controller.ProcessController;
+
 import java.awt.event.ActionEvent;
 
 public class MainView implements ActionListener {
@@ -30,7 +34,8 @@ public class MainView implements ActionListener {
 
     private JLabel ltable = new JLabel("Tabela de processos pronto(s)");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizado(s)");
-    private JLabel lprocessor = new JLabel("Processador RAMIx86_64");
+    private JLabel lprocessor = new JLabel("Processador: RAMI");
+    private JLabel lprocessorspeed = new JLabel("");
     private static JLabel lexecuting = new JLabel("Processo em execução");
     private static JLabel lexecdescription =  new JLabel();
 
@@ -39,10 +44,13 @@ public class MainView implements ActionListener {
     private JButton breset = new JButton("Resetar simulação");
     private static JButton binit = new JButton("Iniciar simulação");
 
-    // The scheduler used 
-    static Scheduler scheduler = new Scheduler();
+    // The scheduler used
+    public static Scheduler scheduler = new Scheduler();
     // The processor used
     Processor cpu = new Processor(100);
+
+    // The thread that runs the processes
+    private Thread t = null;
 
     static boolean executionFinished;
 
@@ -61,6 +69,11 @@ public class MainView implements ActionListener {
         lprocessor.setBounds(10, 30, 250, 20);
         panel.add(lprocessor);
 
+        lprocessorspeed.setFont(Fonts.bold);
+        lprocessorspeed.setBounds(10, 55, 250, 20);
+        lprocessorspeed.setText("Velocidade: " + cpu.getTimeSlice() + "ms/s");
+        panel.add(lprocessorspeed);
+
         lexecuting.setVisible(false);
         lexecuting.setBounds(10, 115, 250, 20);
         panel.add(lexecuting);
@@ -70,7 +83,7 @@ public class MainView implements ActionListener {
         lexecdescription.setBounds( 10, 130, 250, 20);
         panel.add(lexecdescription);
 
-        ltable.setBounds(10, 180, 150, 20);
+        ltable.setBounds(10, 180, 200, 20);
         panel.add(ltable);
 
         ltable2.setBounds(400, 180, 200, 20);
@@ -108,21 +121,14 @@ public class MainView implements ActionListener {
         frame.setVisible(true);
     }
 
-    public static void update(Process p) {
-        tpt2.push(p.toObject());
-
-        tpt.update();
-        tpt2.update();
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bnew) {
-            Process p = scheduler.createProcess();
+            Process p = ProcessController.create();
             p.properties();
 
             scheduler.add(p);
-            updateTable(tpt);
+            TableController.update(tpt, scheduler, QueueType.PROCESS_QUEUE);
         } else if (e.getSource() == bremove) {
             int row = ttable.getSelectedRow();
 
@@ -134,50 +140,66 @@ public class MainView implements ActionListener {
                 int pid = (int) process[0];
                 scheduler.remove(pid);
 
-                tpt.remove(row);
-                tpt2.push(process);
+                TableController.remove(tpt, row);
+                TableController.add(tpt2, process);
             }
         } else if (e.getSource() == breset) {
             scheduler.clear();
-            tpt.clear();
-            tpt2.clear();
+            TableController.clear(tpt);
+            TableController.clear(tpt2);
 
             lexecdescription.setVisible(false);
             lexecuting.setVisible(false);
             binit.setEnabled(true);
+
+            if (t != null) {
+                t.interrupt();
+            }
         } else if(e.getSource() == binit) {
-            executionFinished = false;
+            if (!scheduler.queueIsEmpty) {
+                executionFinished = false;
 
-            lexecdescription.setVisible(true);
-            lexecuting.setVisible(true);
-            binit.setEnabled(false);
+                lexecdescription.setVisible(true);
+                lexecuting.setVisible(true);
+                binit.setEnabled(false);
 
-            Runnable r = () -> {
-                while(!scheduler.queueIsEmpty) {
-                    scheduler.update(cpu);
-                }
-            };
+                // Creates a Runnable which runs on a separate thread of execution
+                Runnable r = () -> {
+                    while (!scheduler.queueIsEmpty) {
+                        scheduler.update(cpu);
+                    }
+                };
 
-            Thread t = new Thread(r);
-            t.start();
+                t = new Thread(r);
+                t.start();
+            }
         }
 
     }
 
-    public static void updateTable(ProcessTable pt) {
-        // What I'm about to do looks like MacGyverism but it will work
-        pt.clear();
+    public static void update(Process p) {
+        TableController.add(tpt2, p.toObject());
 
-        for (Object[] o : scheduler.get()) {
-            pt.push(o);
-        }
+        TableController.update(tpt, scheduler, QueueType.PROCESS_QUEUE);
+        TableController.update(tpt2, scheduler, QueueType.DEAD_QUEUE);
     }
 
     public static void updateGUI(Process p) {
         try {
-            MainView.lexecdescription.setText(p.pid + " - " + p.name + " - " + p.getExecutionTime() + "ms");
-        } catch (NullPointerException ex) {
-            MainView.lexecdescription.setText("Finalizado");
+            if (!scheduler.queueIsEmpty) {
+                MainView.lexecdescription.setText(p.pid + " - " + p.name + " - " +
+                                                  p.getExecutionTime() + "ms");
+            } else {
+                MainView.lexecdescription.setText("");
+                JOptionPane.showMessageDialog(null, "Execução de processos finalizada",
+                                              "Informação", JOptionPane.INFORMATION_MESSAGE);
+                MainView.lexecuting.setVisible(false);
+                MainView.lexecdescription.setVisible(false);
+
+                binit.setEnabled(true);
+            }
+        } catch(NullPointerException ex) {
+
         }
     }
 }
