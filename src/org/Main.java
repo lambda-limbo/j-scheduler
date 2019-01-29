@@ -2,7 +2,7 @@ package org;
 
 import javax.swing.*;
 
-import org.gui.Greetings;
+import org.scheduler.view.Greetings;
 
 public class Main {
 

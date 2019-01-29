@@ -1,4 +1,4 @@
-package org.scheduler;
+package org.scheduler.model;
 
 public class Processor {
 

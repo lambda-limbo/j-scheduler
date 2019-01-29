@@ -1,12 +1,12 @@
-package org.gui;
+package org.scheduler.view;
 
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import org.scheduler.Process;
-import org.scheduler.Scheduler;
-import org.scheduler.Processor;
+import org.scheduler.model.Process;
+import org.scheduler.model.Scheduler;
+import org.scheduler.model.Processor;
 
 import java.awt.event.ActionEvent;
 

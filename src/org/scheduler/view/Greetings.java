@@ -1,4 +1,4 @@
-package org.gui;
+package org.scheduler.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

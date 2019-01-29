@@ -1,13 +1,10 @@
-package org.scheduler;
+package org.scheduler.model;
 
 import java.util.*;
 
-import org.gui.MainView;
-import org.scheduler.Processor;
+import org.scheduler.view.MainView;
 
-import javax.swing.*;
-
-import static org.scheduler.Process.PRIORITY.*;
+import static org.scheduler.model.Process.PRIORITY.*;
 
 public class Scheduler {
 

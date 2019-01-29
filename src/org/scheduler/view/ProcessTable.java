@@ -1,4 +1,4 @@
-package org.gui;
+package org.scheduler.view;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.Vector;
