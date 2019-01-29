@@ -4,9 +4,10 @@ JAR = jar
 
 FLAGS =
 
-SRC = org/Main.java org/gui/Greetings.java org/gui/MainView.java \
-      org/scheduler/Processor.java org/scheduler/Process.java  \
-      org/scheduler/Scheduler.java
+SRC = org/Main.java org/scheduler/view/Greetings.java \
+	  org/scheduler/view/MainView.java \
+      org/scheduler/model/Processor.java org/scheduler/model/Process.java  \
+      org/scheduler/model/Scheduler.java
 
 OBJ = `find .. -name "*.class" | xargs echo`
 
