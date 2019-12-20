@@ -4,7 +4,7 @@
 # IntelliJ-IDEA files
 *.iml
 .idea/*
-out/
+out/production
 
 # Java related files
 *.class
