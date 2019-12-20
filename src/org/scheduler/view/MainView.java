@@ -35,13 +35,15 @@ public class MainView implements ActionListener {
     private JLabel ltable = new JLabel("Tabela de processos pronto(s)");
     private JLabel ltable2 = new JLabel("Tabela de processos finalizado(s)");
     private JLabel lprocessor = new JLabel("Processador: RAMI");
-    private JLabel lprocessorspeed = new JLabel("");
+    private JLabel lprocessorspeedtext = new JLabel();
+    private JTextField lprocessorspeed = new JTextField("100");
     private static JLabel lexecuting = new JLabel("Processo em execução");
     private static JLabel lexecdescription =  new JLabel();
 
     private JButton bnew = new JButton("Novo processo");
     private JButton bremove = new JButton("Matar processo");
     private JButton breset = new JButton("Resetar simulação");
+    private JButton bclock = new JButton("Alterar clock");
     private static JButton binit = new JButton("Iniciar simulação");
 
     // The scheduler used
@@ -69,10 +71,17 @@ public class MainView implements ActionListener {
         lprocessor.setBounds(10, 30, 250, 20);
         panel.add(lprocessor);
 
-        lprocessorspeed.setFont(Fonts.bold);
-        lprocessorspeed.setBounds(10, 55, 250, 20);
-        lprocessorspeed.setText("Velocidade: " + cpu.getTimeSlice() + "ms/s");
+        lprocessorspeedtext.setFont(Fonts.bold);
+        lprocessorspeedtext.setBounds(10, 55, 130, 20);
+        lprocessorspeedtext.setText("Clock " + cpu.getTimeSlice() + " ms/s");
+        panel.add(lprocessorspeedtext);
+
+        lprocessorspeed.setBounds( frame.getWidth() - 200, 30, 50, 29);
+        lprocessorspeed.setText((Long.toString(cpu.getTimeSlice())));
         panel.add(lprocessorspeed);
+
+        bclock.setBounds(frame.getWidth() - 145, 30, 130, 30);
+        panel.add(bclock);
 
         lexecuting.setVisible(false);
         lexecuting.setBounds(10, 115, 250, 20);
@@ -95,13 +104,13 @@ public class MainView implements ActionListener {
 
         ttable2.setEnabled(false);
         sptable2.getViewport().add(ttable2);
-        sptable2.setBounds(400, 200, 390, 320);
+        sptable2.setBounds(400, 200, 385, 320);
         panel.add(sptable2);
 
-        bnew.setBounds(frame.getWidth()-220, frame.getHeight()-70, 100, 30);
+        bnew.setBounds(frame.getWidth()-265, frame.getHeight()-70, 120, 30);
         panel.add(bnew);
 
-        bremove.setBounds(frame.getWidth()-110, frame.getHeight()-70, 100, 30);
+        bremove.setBounds(frame.getWidth()-135, frame.getHeight()-70, 120, 30);
         panel.add(bremove);
 
         binit.setBounds(10, frame.getHeight()-70, 130, 30);
@@ -114,6 +123,7 @@ public class MainView implements ActionListener {
         bremove.addActionListener(this);
         breset.addActionListener(this);
         binit.addActionListener(this);
+        bclock.addActionListener(this);
 
         frame.getContentPane().add(panel);
         frame.setLocationRelativeTo(null);
@@ -173,6 +183,9 @@ public class MainView implements ActionListener {
                 t = new Thread(r);
                 t.start();
             }
+        } else if (e.getSource() == bclock) {
+            cpu.setTimeSlice(Long.parseLong(lprocessorspeed.getText()));
+            lprocessorspeedtext.setText("Clock " + cpu.getTimeSlice() + " ms/s");
         }
 
     }

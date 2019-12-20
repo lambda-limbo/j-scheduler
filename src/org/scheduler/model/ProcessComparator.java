@@ -29,7 +29,7 @@ public class ProcessComparator implements Comparator<Process> {
             } else {
                 r = -1;
             }
-        } else if (pp1 == HIGH && pp2 == LOW || pp1 == HIGH && pp2 == MEDIUM) {
+        } else if (pp1 == HIGH) {
             // If a process has a high priority but it has been executed at least 2 times more the amount of time
             // the other process has used the processor, the latter will take the lead on the queue.
             if (te1 > 2*te2) {
@@ -37,8 +37,8 @@ public class ProcessComparator implements Comparator<Process> {
             } else {
                 r = -1;
             }
-        } else if (pp2 == HIGH && pp1 == LOW || pp2 == HIGH && pp1 == MEDIUM) {
-            // analogously to the previous comment
+        } else if (pp2 == HIGH) {
+            // analogously to the previous else-if-block comment
             if (te1 > 2*te2) {
                 r = -1;
             } else {

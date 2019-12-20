@@ -12,7 +12,7 @@ public class Process {
     /// How many times a process has been executed, it helps the scheduler
     private int executed;
     /// The priority of execution of the process, it helps the scheduler as well
-    private PRIORITY priority = PRIORITY.LOW;
+    private PRIORITY priority;
     /// Does the process has finished its task?
     public Boolean finished;
 
@@ -37,11 +37,12 @@ public class Process {
     }
 
     public void processIt(long timeSlice) {
+        executionTime -= timeSlice;
+
         if (executionTime <= 0 ) {
             executionTime = 0;
             finished = true;
         } else {
-            executionTime -= timeSlice;
             executed++;
         }
     }
